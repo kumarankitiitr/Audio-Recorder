@@ -20,16 +20,19 @@ class RecorderFragment : Fragment(R.layout.fragment_recorder) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = (activity as MainActivity).audioViewModel
+        viewModel = (activity as MainActivity).audioViewModel       //Taking view model from Main Activity
 
+        //Track the position of the media recorder and change the text of the record button
         viewModel.btRecorderText.observe(activity as MainActivity, Observer {
             btRecord.text = it
         })
 
+        //Track the recording time
         viewModel.currTime.observe(activity as MainActivity, Observer {
             tvTime.text = it
         })
 
+        // After checking the permission start recording or stop recording
         btRecord.setOnClickListener {
             if (checkPermission()){
                 viewModel.record()
@@ -37,6 +40,7 @@ class RecorderFragment : Fragment(R.layout.fragment_recorder) {
         }
     }
 
+    // Check and, if not given the ask for the Record_Audio permission
     private fun checkPermission(): Boolean{
         return if(ContextCompat.checkSelfPermission(context!!,
                 Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) true
@@ -46,6 +50,7 @@ class RecorderFragment : Fragment(R.layout.fragment_recorder) {
         }
     }
 
+    //When app goes to background close close or release and null the recorder
     override fun onStop() {
         super.onStop()
         viewModel.closeRecording()

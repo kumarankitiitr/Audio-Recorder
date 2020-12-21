@@ -8,8 +8,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class ViewPagerAdapter(fragment: FragmentActivity): FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {
-        return 2
+        return 2    // total tabs
     }
+
+    //setting fragments according to its index
     override fun createFragment(position: Int): Fragment {
         return if(position ==0) RecorderFragment()
         else AudiosFragment()

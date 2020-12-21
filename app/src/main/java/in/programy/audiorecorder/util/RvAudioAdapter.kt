@@ -14,6 +14,7 @@ class RvAudioAdapter(private val list: List<Item>) : RecyclerView.Adapter<RvAudi
     inner class AudioViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioViewHolder {
+        // Inflating the layout with of of items in recycler view
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_audio,parent,false)
         return AudioViewHolder(view)
     }
@@ -31,6 +32,7 @@ class RvAudioAdapter(private val list: List<Item>) : RecyclerView.Adapter<RvAudi
         }
     }
 
+    // On ClickListener for handle outside the adapter
     private var clickListener : ((Int)-> Unit)? = null
 
     fun setOnClickListener(listener: (Int)->Unit){
