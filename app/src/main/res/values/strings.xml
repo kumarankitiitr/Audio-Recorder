@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Audio Recorder</string>
+    <string name="tab_record">Recorder</string>
+    <string name="tab_audio">Audios</string>
+</resources>
