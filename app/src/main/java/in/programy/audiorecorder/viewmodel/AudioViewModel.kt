@@ -52,7 +52,7 @@ class AudioViewModel(application: Application): AndroidViewModel(application) {
         else stopRecording()
     }
 
-    fun startRecording(){
+    private fun startRecording(){
         tempFileName = "${System.currentTimeMillis()}.3gp"
         val fileName = "${context.externalCacheDir?.absolutePath}/$tempFileName"
         recorder = MediaRecorder().apply {
@@ -77,8 +77,8 @@ class AudioViewModel(application: Application): AndroidViewModel(application) {
         btRecorderText.postValue("RECORD")
         val item = Item(tempFileName,tempTime)
         newItem.postValue(item)
-        player.addMediaSource(factory.createMediaSource(MediaItem.fromUri("$path/${item.name}")))
-        player.prepare()
+        //player.addMediaSource(factory.createMediaSource(MediaItem.fromUri("$path/${item.name}")))
+        //player.prepare()
         isRecording = false
     }
 
@@ -130,7 +130,14 @@ class AudioViewModel(application: Application): AndroidViewModel(application) {
             list.add(Item(i.name,millis))
         }
         startList.postValue(list)
-        preparePlayer()
+        //preparePlayer()
+    }
+
+    fun playAudio(name: String){
+        player.clearMediaItems()
+        player.setMediaSource(factory.createMediaSource(MediaItem.fromUri("$path/$name")))
+        player.prepare()
+        player.playWhenReady = true
     }
 
     private fun preparePlayer(){

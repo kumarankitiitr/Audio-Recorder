@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ShuffleOrder
 import kotlinx.android.synthetic.main.fragment_audios.*
+import kotlin.random.Random
 
 
 class AudiosFragment : Fragment(R.layout.fragment_audios) {
@@ -31,6 +32,8 @@ class AudiosFragment : Fragment(R.layout.fragment_audios) {
     private lateinit var viewModel: AudioViewModel
     lateinit var audioList: MutableList<Item>
     lateinit var player: SimpleExoPlayer
+    private var isShuffleMode = false
+    private var currentPlayingIndex: Int = -1
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,8 +57,8 @@ class AudiosFragment : Fragment(R.layout.fragment_audios) {
         })
 
         currentItemIndex.observe(activity as MainActivity, Observer {
-            tvTitle.text = audioList[it].name
-            seekBar.max = audioList[it].duration.toInt()
+            tvTitle.text = audioList[currentPlayingIndex].name
+            seekBar.max = audioList[currentPlayingIndex].duration.toInt()
             viewModel.startPlayerTimer()
         })
 
@@ -84,8 +87,8 @@ class AudiosFragment : Fragment(R.layout.fragment_audios) {
         })
 
         rvAudioAdapter.setOnClickListener {
-            player.seekTo(it,0)
-            player.playWhenReady = true
+            viewModel.playAudio(audioList[it].name)
+            currentPlayingIndex = it
             playerLayout.visibility = View.VISIBLE
         }
 
@@ -95,13 +98,23 @@ class AudiosFragment : Fragment(R.layout.fragment_audios) {
         }
 
         ivNext.setOnClickListener {
-            if(player.hasNext()) player.next()
-            else Toast.makeText(context,"Not Available",Toast.LENGTH_SHORT).show()
+            if (currentPlayingIndex != -1){
+                if(isShuffleMode) setShufflePlayingIndex()
+                else{
+                    if(audioList.size-1 > currentPlayingIndex) viewModel.playAudio(audioList[++currentPlayingIndex].name)
+                    else Toast.makeText(context,"Not Available",Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         ivPrev.setOnClickListener {
-            if(player.hasPrevious()) player.previous()
-            else Toast.makeText(context,"Not Available",Toast.LENGTH_SHORT).show()
+            if (currentPlayingIndex != -1){
+                if (isShuffleMode) setShufflePlayingIndex()
+                else{
+                    if(0 < currentPlayingIndex) viewModel.playAudio(audioList[--currentPlayingIndex].name)
+                    else Toast.makeText(context,"Not Available",Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         ivShuffle.setOnClickListener {
@@ -152,14 +165,13 @@ class AudiosFragment : Fragment(R.layout.fragment_audios) {
     }
 
     private fun onShuffle(){
-        player.shuffleModeEnabled = true
-        player.setShuffleOrder(ShuffleOrder.DefaultShuffleOrder(player.mediaItemCount))
+        isShuffleMode = true
         ivShuffle.background = context?.let { c ->
             ContextCompat.getDrawable(c, R.drawable.item_enable) }
     }
 
     private fun offShuffle(){
-        player.shuffleModeEnabled = false
+        isShuffleMode = false
         ivShuffle.background = null
     }
 
@@ -172,5 +184,10 @@ class AudiosFragment : Fragment(R.layout.fragment_audios) {
     private fun offRepeat(){
         player.repeatMode = Player.REPEAT_MODE_OFF
         ivRepeat.background = null
+    }
+
+    private fun setShufflePlayingIndex(){
+        currentPlayingIndex = Random.nextInt(audioList.size)
+        viewModel.playAudio(audioList[currentPlayingIndex].name)
     }
 }
