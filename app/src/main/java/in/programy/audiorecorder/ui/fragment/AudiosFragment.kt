@@ -43,6 +43,8 @@ class AudiosFragment : Fragment(R.layout.fragment_audios) {
 
         setUpRecyclerView()
 
+        player = viewModel.player
+
         //In Start take the list of all previous recording
         viewModel.startList.observe(activity as MainActivity, Observer {
             audioList.addAll(it)
@@ -81,7 +83,7 @@ class AudiosFragment : Fragment(R.layout.fragment_audios) {
             }
         })
 
-        //Tracking the seekbar changes, Mainly when the user tap or change the seekbar position
+        //Tracking the seekBar changes, Mainly when the user tap or change the seekbar position
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) = Unit
 

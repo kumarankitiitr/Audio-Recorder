@@ -7,6 +7,8 @@ import `in`.programy.audiorecorder.viewmodel.AudioViewModelFactory
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayoutMediator
@@ -30,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(tabLayout,viewPager){ tab, i ->   //Setting the tab names
             tab.text = getString(tabNames[i])
         }.attach()
-
     }
 
     // Listen after user accepts the permission of record audio
@@ -44,6 +45,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
 }

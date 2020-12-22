@@ -5,10 +5,12 @@ import `in`.programy.audiorecorder.ui.MainActivity
 import `in`.programy.audiorecorder.viewmodel.AudioViewModel
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -32,11 +34,26 @@ class RecorderFragment : Fragment(R.layout.fragment_recorder) {
             tvTime.text = it
         })
 
+        //Setting the visibility of pause Button
+        viewModel.pauseButtonState.observe(activity as MainActivity, Observer {
+            if(it) btPause.visibility = View.VISIBLE
+            else btPause.visibility = View.GONE
+        })
+
+        //Changing the text of pause button after clicking it
+        viewModel.pauseButtonText.observe(activity as MainActivity, Observer {
+            btPause.text = it
+        })
+
         // After checking the permission start recording or stop recording
         btRecord.setOnClickListener {
             if (checkPermission()){
                 viewModel.record()
             }
+        }
+
+        btPause.setOnClickListener {
+            viewModel.pauseOrResumeRecorder()
         }
     }
 
